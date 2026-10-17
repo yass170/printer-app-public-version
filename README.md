@@ -1,30 +1,132 @@
-# Printer App — version publique
+# Printer App — Label Design and Production Printing
 
-Application consacrée à la préparation et au pilotage de tâches d’impression.
+A Windows desktop toolset for designing reusable label layouts and printing batches of labels on Zebra-compatible printers.
 
-## Confidentialité et anonymisation
+Administrators prepare reusable label templates; operators load those templates with batch data, inspect the output and confirm printing. The project separates template authoring from production use while keeping the interpretation of label geometry consistent.
 
-Ce dépôt est une présentation publique de la structure du projet. **Tous les contenus d’origine des fichiers conservés ont été supprimés pour des raisons de confidentialité.** Les fichiers de code, de configuration, de migration SQL, de tests, de gouvernance et les artefacts d’ingénierie conservés contiennent uniquement la phrase « Contenu anonymisé ». Cette règle s’applique aussi aux exemples et aux modèles.
+## Users
 
-Les données, secrets, fichiers binaires, dépendances embarquées, résultats générés, wireframes, journaux et dossiers de documentation de work ont été exclus. Les dossiers `.agent` et `.agents`, les fichiers `AGENTS.md` et les métadonnées Git d’origine sont absents. Les noms susceptibles de révéler une entreprise, une personne, un client ou un système interne ont été remplacés par des noms génériques.
+| Role | Use |
+|---|---|
+| Template administrator | Create, edit and verify label layouts and manage shared template locations. |
+| Production operator | Select a template, load a batch, preview labels and confirm the printer destination. |
 
-Seuls ce README et les présentations d’architecture ont un contenu explicatif : ces textes ont été entièrement rédigés pour cette version publique, sans reprendre les détails internes. L’historique Git public commence avec cette version anonymisée.
+## Main features
 
-## Fonctionnement général
+- **Visual template editor.** Compose text, images, shapes and barcodes in a WYSIWYG label workspace.
+- **Layout manipulation.** Select, move, resize, rotate and undo changes to label elements.
+- **Template library.** Find and reuse layouts from configured shared locations.
+- **Batch verification.** Check how incoming values map onto a chosen label and inspect diagnostic results.
+- **Operator preview.** Review labels using the batch’s actual values before printing.
+- **Printer integration.** Select a Windows printer and submit confirmed label output.
 
-Deux ensembles présentent les rôles d’administration et d’utilisation. Les sous-dossiers exposent les couches applicatives, les interfaces, les services et les tests. Les formats d’impression et les traitements métier sont masqués.
+## Typical workflow
 
-Formats techniques représentés : Python, C# / .NET, C, XAML, scripts shell, configuration textuelle.
+1. An administrator prepares and verifies a reusable label template.
+2. An operator chooses that template and opens a batch file.
+3. The application validates the input and renders a preview.
+4. The operator checks the result and confirms printing.
 
-La copie permet de parcourir l’organisation technique et d’identifier les familles de composants. **Elle ne permet ni d’exécuter ni de reconstruire le projet.** Les configurations et les migrations sont volontairement incomplètes et ne doivent pas être lancées.
+## Project structure
 
-## Organisation
+```text
+printer-app-public-version/
+├── administration/
+│   ├── csharp/
+│   │   ├── module-003/
+│   │   │   └── module-001/
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   ├── application/
+│   │   │   ├── domain/
+│   │   │   └── infrastructure/
+│   │   └── tests/
+│   ├── docs/
+│   │   ├── decisions/
+│   │   │   └── README.md
+│   │   ├── issue/
+│   │   ├── specifications/
+│   │   ├── technical/
+│   │   └── user/
+│   ├── issues/
+│   │   ├── epics/
+│   │   ├── features/
+│   │   ├── tasks/
+│   │   └── README.md
+│   ├── scripts/
+│   │   └── tests/
+│   ├── tools/
+│   │   └── typography/
+│   └── README.md
+├── docs/
+│   ├── design/
+│   │   ├── decisions.md
+│   │   ├── requirements.md
+│   │   └── verification.md
+│   └── module-001/
+├── operateur/
+│   ├── backend/
+│   │   ├── domain/
+│   │   ├── resources/
+│   │   │   └── typography/
+│   │   ├── services/
+│   │   └── tests/
+│   ├── docs/
+│   │   ├── decisions/
+│   │   │   └── README.md
+│   │   ├── issue/
+│   │   ├── specifications/
+│   │   ├── technical/
+│   │   └── user/
+│   ├── frontend/
+│   │   ├── controllers/
+│   │   ├── dialogs/
+│   │   ├── module-007/
+│   │   ├── tests/
+│   │   └── app.py
+│   ├── issues/
+│   │   ├── epics/
+│   │   ├── features/
+│   │   ├── tasks/
+│   │   └── README.md
+│   ├── module-005/
+│   │   └── module-001/
+│   │       ├── module-002/
+│   │       ├── src/
+│   │       └── README.md
+│   ├── module-006/
+│   ├── packaging/
+│   ├── scripts/
+│   │   └── tests/
+│   ├── pyproject.toml
+│   └── README.md
+├── ARCHITECTURE.md
+└── README.md
+```
 
-- `MakeFile`
-- `administration/`
-- `docs/`
-- `operateur/`
+[Complete directory structure](docs/design/structure.md)
 
-Les noms `module-…` et `fichier-…` désignent des éléments renommés. Les extensions des fichiers textuels conservés indiquent leur format d’origine.
+| Area | Responsibility |
+|---|---|
+| Administration application | C#/.NET with Avalonia and MVVM for template editing and verification. |
+| Operator application | Python/Tkinter interface for batch loading, preview and printing. |
+| Domain and application layers | Label concepts, editing operations, verification and use cases. |
+| Rendering and printing adapters | Preview generation, barcode handling and Windows printer access. |
+| Shared documents | External template definitions and batch inputs exchanged by the two applications. |
 
-Consulter [ARCHITECTURE.md](ARCHITECTURE.md) pour la présentation générale.
+## Technology
+
+C#/.NET, Avalonia, MVVM, Python, Tkinter, XML and ZPL.
+
+## Engineering
+
+- [Architecture](ARCHITECTURE.md)
+- [Product requirements](docs/design/requirements.md)
+- [Design decisions](docs/design/decisions.md)
+- [Verification strategy](docs/design/verification.md)
+
+Barcode previews and software tests do not replace checks on the actual printer, media and production workstation.
+
+---
+
+Source code, operational configuration and project-specific data are withheld for confidentiality.
